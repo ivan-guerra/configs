@@ -1,0 +1,35 @@
+####################################################################
+  # File Name: .astylerc
+  # Purpose: Configure astyle code formatter.
+  # Creation Date: Tue Jul 04 21:20:40 PDT 2017
+  # Last Modified: Tue Jul 04 21:20:43 PDT 2017
+  # Created By: Ivan Guerra <Ivan.E.Guerra-1@ou.edu>
+####################################################################
+
+# Set the code style.
+--style=linux
+
+# Formatting options.
+# See examples at http://astyle.sourceforge.net.
+--indent=spaces=4
+--attach-inlines
+--attach-closing-while
+--indent-modifiers
+--indent-switches
+--indent-col1-comments
+--pad-oper
+--pad-comma
+--pad-header
+--align-pointer=name
+--align-reference=name
+--break-one-line-headers
+--remove-braces
+--convert-tabs
+--max-code-length=80
+--break-after-logical
+
+# Command line options.
+# These options have nothing to do with formatting.
+--suffix=none
+--verbose
+--lineend=linux
