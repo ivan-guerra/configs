@@ -1,49 +1,69 @@
 " General settings.
-set exrc
 set secure
 set mouse=c
 set shortmess+=A
+set noswapfile
 set nocompatible
-filetype off
 
+" Set the runtime path to include Vundle and init plugins.
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-
-" Plugin manager
 Plugin 'VundleVim/Vundle.vim'
 
-" File/source tree
-Plugin 'majutsushi/tagbar'
-Plugin 'scrooloose/nerdtree'
+" Git plugins.
+Plugin 'https://github.com/tpope/vim-fugitive.git'
+Plugin 'https://github.com/airblade/vim-gitgutter.git'
 
-" Completion
-Plugin 'ervandew/supertab'
+" Status bar.
+Plugin 'https://github.com/vim-airline/vim-airline.git'
 
-" Git
-Plugin 'tpope/vim-fugitive'
-Plugin 'airblade/vim-gitgutter'
+" File/source tree.
+Plugin 'https://github.com/preservim/nerdtree.git'
+let NERDTreeIgnore = ['__pycache__', '\.pyc$', '\.o$', '\.so$', '\.a$', '\.swp', '*\.swp', '\.swo', '\.swn', '\.swh', '\.swm', '\.swl', '\.swk', '\.sw*$', '[a-zA-Z]*egg[a-zA-Z]*', '.DS_Store']
+let NERDTreeShowHidden=1
+let g:NERDTreeWinPos="left"
+let g:NERDTreeDirArrows=1
+let g:NERDTreeQuitOnOpen=1
+map <C-n> :NERDTreeToggle<CR>
 
-" Syntax helpers
-Plugin 'scrooloose/syntastic'
-Plugin 'octol/vim-cpp-enhanced-highlight'
+" Syntax helpers.
+Plugin 'https://github.com/vim-syntastic/syntastic.git'
+let g:syntastic_check_on_open=1
+let g:syntastic_python_checkers=['flake8']
 
-" Status bar
-Plugin 'bling/vim-airline'
+" WARNING, to use tagbar you have to install CTags on your machine!
+set runtimepath^=~/.vim/plugins/tagbar-master
+let g:tagbar_autoclose=1
+map <C-b> :TagbarToggle<CR>
+set tags=./tags,tags;$HOME
 
-" Color schemes
-Plugin 'flazz/vim-colorschemes'
+Plugin 'https://github.com/majutsushi/tagbar.git'
+
+" Completion.
+Plugin 'https://github.com/ervandew/supertab.git'
+
+" Code alignment.
+Plugin 'https://github.com/junegunn/vim-easy-align.git'
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+if !exists('g:easy_align_delimiters')
+    let g:easy_align_delimiters = {}
+endif
+let g:easy_align_delimiters['d'] = {
+\ 'pattern': ' \ze\S\+\s*[;=]',
+\ 'left_margin': 0, 'right_margin': 0
+\ } " The d delimiter helps us align on variable declarations (i.e., the var names line up).
 
 call vundle#end()
-filetype plugin indent on
 
 " Set indentation rules.
 set smarttab
 set expandtab
 set autoindent
 set smartindent
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
 
 " Look and feel and workflow settings.
 syntax on
@@ -57,7 +77,7 @@ set nohlsearch
 set backspace=indent,eol,start
 set laststatus=2
 set fillchars+=vert:\|
-set colorcolumn=110
+set colorcolumn=80
 colorscheme jellybeans
 highlight ColorColumn ctermbg=darkgray
 
@@ -74,27 +94,27 @@ nmap <C-Right> :tabnext<CR>
 nmap <C-Left> :tabprevious<CR>
 inoremap <C-Z> <C-O>u
 inoremap { {<CR><BS>}<Esc>ko
-nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 " The following mappings allow for bracket/paren/quote auto-completion and escape.
 inoremap ( ()<Esc>i
 inoremap [ []<Esc>i
 inoremap " ""<Esc>i
 inoremap ' ''<Esc>i
 inoremap <C-j> <Esc>/[)}"'\]>]<CR>:nohl<CR>a
+map <C-l> :call VarAlign()<CR>
 
-" Plugins and plugin configurations
+" Call StripTrailingWhitespaces() on file save.
+autocmd BufWritePre * :call StripTrailingWhitespaces()
 
-" File/source tree.
-let NERDTreeIgnore = ['__pycache__', '\.pyc$', '\.o$', '\.so$', '\.a$', '\.swp', '*\.swp', '\.swo', '\.swn', '\.swh', '\.swm', '\.swl', '\.swk', '\.sw*$', '[a-zA-Z]*egg[a-zA-Z]*', '.DS_Store']
-let NERDTreeShowHidden=1
-let g:NERDTreeWinPos="left"
-let g:NERDTreeDirArrows=1
-map <C-n> :NERDTreeToggle<CR>
+" Align selected code to follow the MCRT dev style guide.
+function VarAlign()
+    exe "normal! \e"
+    exe ":'<,'>EasyAlign d"
+    exe ":'<,'>EasyAlign ="
+endfunction
 
-" WARNING, to use tagbar you have to install CTags on your machine!
-let g:tagbar_autoclose=1
-map <C-b> :TagbarToggle<CR>
-set tags=./tags,tags;$HOME
-
-" Syntax helpers.
-let g:syntastic_check_on_open=1
+function StripTrailingWhitespaces()
+    let l = line(".")
+    let c = col(".")
+    keepp %s/\s\+$//e
+    call cursor(l, c)
+endfun
