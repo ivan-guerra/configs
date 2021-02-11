@@ -26,7 +26,12 @@ alias setmon='xrandr --output HDMI1 --primary --auto --right-of LVDS1 --output L
 alias resetmon='xrandr --auto'
 
 # Video editing
-alias mountusb='sudo mount -o gid=ieg,fmask=113,dmask=002 /dev/sdb /mnt/usb'
+
+## Mount a USB device to /mnt/usb.
+## $1 - Device name excluding the /dev/ prefix.
+mountusb() {
+  sudo mount -o gid=ieg,fmask=113,dmask=002 /dev/$1 /mnt/usb
+}
 alias umountusb='sudo umount /mnt/usb'
 
 ## Play a video with ffplay and include a timestamp box in HH:MM:SS format.
